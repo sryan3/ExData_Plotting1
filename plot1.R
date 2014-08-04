@@ -1,0 +1,15 @@
+plot1 <- function() {
+  require(data.table)
+  library(datasets)
+  findRows<-fread("data/household_power_consumption.txt", header = TRUE, select = 1)
+  all<-(which(findRows$Date %in% c("1/2/2007", "2/2/2007")) )
+  skipLines<- min(all)
+  keepRows<- length(all)
+  headers = names(findRows)
+  rm(findRows)
+  DT <- read.table("data/household_power_consumption.txt",sep=";",header=FALSE, skip = skipLines , nrows = keepRows,na.strings=c('?'),colClasses=c("character","character",rep("numeric",7)))
+  DT$V1 = strptime(DT$V1, format="%d/%m/$Y")
+  DT$V2 = strptime(DT$V2, format="%H/%M/$S")
+  hist(DT$V3,col = "red",breaks=20,xlim=c(0,6),ylim=c(0, 1200),xaxt='n',main="Global Active Power", xlab="Global Active Power (kilowatts)")
+  axis(side=1,at=seq(0,6, 2), labels=seq(0,6,2))
+}
